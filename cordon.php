@@ -19,7 +19,11 @@ $_options = get_option('cordon');
 
 if ($_options['enabled'] === true) {
   ob_start(function($buffer){
-    return preg_replace_callback('/http(s?):\/\/(\S+?)\/wp-content\/(.*)\.(css|js|png|jpeg|jpg|gif)/i', function($matches) {
+    $host = $_SERVER['HTTP_HOST'];
+    $regex = "/http(s?):\/\/($host)\/wp-content\/(.*)\.(css|js|png|jpeg|jpg|gif)/i";
+
+    return preg_replace_callback($regex, function($matches) {
+      global $blog_domain;
       $_options = get_option('cordon');
 
       $file = ABSPATH . 'wp-content/' . $matches[3] . '.' . $matches[4];
